@@ -3,6 +3,7 @@ const Joi = require("joi");
 module.exports = {
   createStudentSchema: async (req, res, next) => {
     const createUser = Joi.object({
+      role: Joi.valid("Instructor", "Admin", "Trainee").required(),
       username: Joi.string().min(3).max(34).required(),
       password: Joi.string()
         .pattern(new RegExp("^[a-zA-Z0-9]{6,30}$"))
@@ -10,6 +11,20 @@ module.exports = {
     });
     try {
       await createUser.validateAsync(req.body);
+      next();
+    } catch (error) {
+      return res.send({
+        error: error.message,
+      });
+    }
+  },
+  getUserName: async (req, res, next) => {
+    const username = Joi.object({
+      username: Joi.string().min(3).max(34),
+      userId: Joi.string(),
+    });
+    try {
+      await username.validateAsync(req.query);
       next();
     } catch (error) {
       return res.send({

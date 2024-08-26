@@ -1,6 +1,10 @@
 const sequelize = require("../bin/dbConnection");
 const users = require("./definitions/users");
-const models = { users };
+const roles = require("./definitions/roles");
+const models = { users, roles };
+
+roles.hasMany(users, { foreignKey: "roleId" });
+users.belongsTo(roles, { foreignKey: "roleId" });
 const db = {};
 db.sequelize = sequelize;
 sequelize.models = models;
